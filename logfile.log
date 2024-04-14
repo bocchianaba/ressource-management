@@ -17323,3 +17323,14 @@ django.template.base.VariableDoesNotExist: Failed lookup for key [name] in <URLR
 2024-04-14 10:03:24,695 DEBUG utils (0.000) SELECT "clients_client"."id", "clients_client"."name", "clients_client"."phone_number", "clients_client"."email", "clients_client"."address" FROM "clients_client"; args=(); alias=default
 2024-04-14 10:03:24,698 INFO basehttp "GET /clients HTTP/1.1" 200 8399
 2024-04-14 10:03:24,832 WARNING basehttp "GET /static/css/https%20://fonts.googleapis.com/css2%20?family=Ubuntu%20:wght@300%20;%20400;%20500;%20700&display=swap HTTP/1.1" 404 1947
+2024-04-14 10:59:03,309 DEBUG autoreload File /Users/adriennoa/projets/soutenance/clients/templates/director/index.html previous mtime: 1713088986.0069268, current mtime: 1713092342.3160796
+2024-04-14 10:59:03,344 DEBUG autoreload /Users/adriennoa/projets/soutenance/clients/templates/director/index.html notified as changed. Signal results: [(<function template_changed at 0x105f844a0>, True), (<function translation_file_changed at 0x1069b56c0>, None)].
+2024-04-14 11:04:35,311 DEBUG autoreload File /Users/adriennoa/projets/soutenance/clients/templates/director/index.html previous mtime: 1713092342.3160796, current mtime: 1713092674.7077627
+2024-04-14 11:04:35,316 DEBUG autoreload /Users/adriennoa/projets/soutenance/clients/templates/director/index.html notified as changed. Signal results: [(<function template_changed at 0x105f844a0>, True), (<function translation_file_changed at 0x1069b56c0>, None)].
+2024-04-14 11:05:44,231 DEBUG utils (0.003) SELECT COUNT(*) AS "__count" FROM "clients_client"; args=(); alias=default
+2024-04-14 11:05:44,240 DEBUG utils (0.000) SELECT "clients_client"."id", "clients_client"."name", "clients_client"."phone_number", "clients_client"."email", "clients_client"."address" FROM "clients_client"; args=(); alias=default
+2024-04-14 11:05:44,243 INFO basehttp "GET /clients HTTP/1.1" 200 6904
+2024-04-14 11:05:44,325 INFO basehttp "GET /static/css/Client.css HTTP/1.1" 304 0
+2024-04-14 11:05:44,341 INFO basehttp "GET /static/js/Client.js HTTP/1.1" 304 0
+2024-04-14 11:05:44,346 INFO basehttp "GET /static/js/Client.js HTTP/1.1" 200 3694
+2024-04-14 11:05:44,518 WARNING basehttp "GET /static/css/https%20://fonts.googleapis.com/css2%20?family=Ubuntu%20:wght@300%20;%20400;%20500;%20700&display=swap HTTP/1.1" 404 1947
