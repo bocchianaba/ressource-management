@@ -37,10 +37,13 @@ def new(request):
         
         logger.info("Méthode Post reçu")
         
-        name=request.POST["nom"]
-        phone=request.POST["telephone"]
-        address=request.POST["adresse"]
-        email=request.POST["email"]
+        # Logger les valeurs de request.POST
+        logger.info("Champs du formulaire : %s", request.POST)
+        
+        name = request.POST.get("nom")
+        phone = request.POST.get("telephone")
+        address = request.POST.get("adresse")
+        email = request.POST.get("email")
         
         logger.info("le client qu'on essaye d'enregistrer a pour nom : %s, téléphone: %s, adresse: %s, email: %s",name, phone, address, email)
         
@@ -48,3 +51,22 @@ def new(request):
         client.save()
         
     return HttpResponseRedirect(reverse("clients:index"))
+
+def delete(request, id):
+    try:
+        element = Client.objects.get(id=id)
+    except Client.DoesNotExist:
+        logger.error("Le client avec l'identifiant %s n'existe pas.", id)
+        raise Http404("Le client n'existe pas.")
+
+    logger.info("Élément récupéré pour la suppression : %s", element)
+    
+    try:
+        element.delete()
+        logger.info("Suppression réussie de : %s", element)
+    except Exception as e:
+        logger.error("Une erreur s'est produite lors de la suppression du client avec l'identifiant %s : %s", id, str(e))
+        # Gérer l'erreur ici, par exemple, afficher un message d'erreur à l'utilisateur ou rediriger vers une autre page
+
+    return HttpResponseRedirect(reverse("clients:index"))
+

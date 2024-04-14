@@ -23,16 +23,21 @@ toggle.onclick = function(){
 let compteurClient = 0;
 
 document.getElementById('clientForm').addEventListener('submit', function(e) {
+  if(!validerDonneeClient())
   e.preventDefault();
-  ajouterClient();
 });
 
 function afficherForm() {
   document.getElementById('formPopup').style.display = 'block';
   document.querySelector('.overlay').style.display = 'block';
+
+  document.getElementById('nom').value = '';
+  document.getElementById('telephone').value = '';
+  document.getElementById('email').value = '';
+  document.getElementById('adresse').value = '';
 }
 
-function ajouterClient() {
+function validerDonneeClient() {
   const nom = document.getElementById('nom').value;
   const telephone = document.getElementById('telephone').value;
   const email = document.getElementById('email').value;
@@ -52,12 +57,12 @@ function ajouterClient() {
   
   if (!regexTelephone.test(telephone) || telephone.length < 9) {
     alert('Le numéro de téléphone doit contenir uniquement des chiffres et le symbole +, et doit avoir au moins 09 caractères.');
-    return;
+    return false;
   }
 
   if (!regexTelephone.test(telephone)) {
     alert('Le numéro de téléphone doit contenir uniquement des chiffres et le symbole +.');
-    return;
+    return false;
   }
   if (nom && telephone && email && adresse) {
     compteurClient++;
@@ -69,12 +74,9 @@ function ajouterClient() {
     // cell2.textContent = nom;
     // cell2.onclick = function() { afficherPopup(nom, telephone, email, adresse); };
     fermerPopup();
-
-    document.getElementById('nom').value = '';
-    document.getElementById('telephone').value = '';
-    document.getElementById('email').value = '';
-    document.getElementById('adresse').value = '';
+    return true
   }
+  return true
 }
 
 function afficherPopup(nom, telephone, email, adresse) {
@@ -88,4 +90,13 @@ function fermerPopup() {
   document.getElementById('formPopup').style.display = 'none';
   document.getElementById('popupInfo').style.display = 'none';
   document.querySelector('.overlay').style.display = 'none';
+}
+
+function afficherPopupSuppression(id, name){
+  if (confirm("Êtes-vous sûr de vouloir supprimer le client : "+name+" ?")) {
+    // Si l'utilisateur confirme, envoyer une requête POST à la vue Django
+    const deleteUrl = document.getElementById(`deleteBtn-${id}`).dataset.url;
+    console.log({deleteUrl})
+    window.location.href=deleteUrl
+  }
 }
