@@ -8,7 +8,7 @@ from django.urls import reverse
 from django.db.models import F
 from django.views import generic
 
-from clients.models import Client, Contract
+from clients.models import Client, Contract, Project
 
 # Create your views here.
 # ...
@@ -113,3 +113,37 @@ def newContract(request):
         contract.save()
         
     return HttpResponseRedirect(reverse("clients:contracts"))
+
+
+class ProjectView(generic.ListView):
+    template_name = "director/project.html"
+    context_object_name = "projects_list"
+
+    def get_queryset(self):
+        """Return all the project"""
+        projects = Project.objects.all()
+        logger.info("obtention de la liste des projets. Les contrats créés sont au nombre de : %s", projects.count())
+        return projects.reverse()
+    
+    
+
+def newProject(request):
+    logger.info("création d'un nouveau projet !")
+    if(request.method=="POST"):
+        
+        logger.info("Méthode Post reçu")
+        
+        # Logger les valeurs de request.POST
+        logger.info("Champs du formulaire : %s", request.POST)
+        
+        name = request.POST.get("nom")
+        dueDate = request.POST.get("delai")
+        description = request.POST.get("description")
+        budget = request.POST.get("budget")
+        
+        logger.info("le contrat qu'on essaye d'enregistrer a pour nom : %s, budget: %s, deadline: %s, description %s, ", name, budget, dueDate, description)
+        
+        project = Project(name=name, deadline=dueDate, description=description, budget=budget)
+        project.save()
+        
+    return HttpResponseRedirect(reverse("clients:projects"))

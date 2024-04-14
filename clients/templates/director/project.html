@@ -1,0 +1,65 @@
+{% extends 'director/index.html' %}
+
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/projet.css' %}">
+{% load static %}
+<script src="{% static 'js/projet.js' %}"></script>
+
+
+<button id="ajouterBtn" onclick="afficherForm()">
+    <ion-icon name="add-circle"></ion-icon>
+    Ajouter un projet
+</button>
+
+{% if projects_list %}
+<h2 style="text-align: center;">Listes des projets</h2>
+<table id="projetTable">
+  <tr>
+    <th>N°</th>
+    <th>Nom du Projet</th>
+    <th>Actions</th>
+  </tr>
+  <tbody>
+      {% for project in projects_list %}
+      <tr>
+          <td> {{forloop.counter}} </td>
+          <td> {{project.name}} </td>
+          <td>
+              <button 
+                  style="background-color: #4CAF50; border:none; color: white; padding: 10px 20px; margin-right: 10px; text-align-center; display: inline-block; text-decoration: none; font-size: 12px; cursor: pointer; border-radius: 4px;" 
+                  id="viewBtn-{{project.id}}" 
+                  onclick="afficherPopup('{{project.name}}', '{{project.deadline}}', '{{project.budget}}', '{{project.description}}')">
+                  <ion-icon name="eye"></ion-icon>
+                  Voir
+              </button>
+          </td>
+      </tr>
+      {% endfor %}
+  </tbody>
+</table>
+{% else %} 
+<h4 style="text-align: center;">
+    Aucun Projet enregistré pour le moment
+</h4>
+{% endif %}
+    
+
+<div class="overlay" onclick="fermerPopup()"></div>
+
+<div class="form-popup" id="formPopup">
+  <h2>Enregistrer un projet</h2>
+  <form id="projetForm" method="post" action="{% url 'clients:newProject' %}">
+    {% csrf_token %}
+    <input type="text" id="nom" name="nom" placeholder="Nom du projet" required>
+    <input type="date" id="delai" name="delai" placeholder="Delai de livraison" required>
+    <input type="number" min="0" id="budget" name="budget" placeholder="budget alloué au projet" required>
+    <textarea name="description" id="description" placeholder="Description du projet" required></textarea>
+    <button type="submit">Enregistrer</button>
+    <button type="button" onclick="fermerPopup()">Fermer</button>
+  </form>
+</div>
+
+<div class="popup" id="popupInfo"></div>
+
+{% endblock %}

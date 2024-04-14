@@ -23,3 +23,11 @@ class Contract(models.Model):
     budget = models.PositiveBigIntegerField(default=0)
     duration = models.IntegerField(default=0)
     max_changes =models.BigIntegerField(default=0)
+
+
+class Project(models.Model):
+    name = models.CharField(max_length=20)
+    deadline = models.CharField(max_length=20)
+    description = models.TextField(default="")
+    budget = models.PositiveBigIntegerField(default=0)
+    
