@@ -1,0 +1,78 @@
+{% extends 'director/index.html' %}
+
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/contrat.css' %}">
+{% load static %}
+<script src="{% static 'js/contrat.js' %}"></script>
+
+<button id="ajouterBtn" onclick="showForm()">
+    <ion-icon name="add-circle"></ion-icon>
+    Établir un Contrat
+</button>
+
+<div class="form-popup" id="formPopup">
+    <h2>Formulaire de Contrat</h2>
+    <form id="contratForm" method="post" action="{% url 'clients:newContract' %}">
+        {% csrf_token %}
+        <input type="text" name="name" id="contractName" placeholder="Nom du contrat" required><br>
+      {% comment %} <input type="text" id="clientName" placeholder="Nom du client" required><br> {% endcomment %}
+      <select required name="client" id="clientName">
+        {% for client in clients_list %}
+        <option value="{{client.id}}">{{client.name}}</option>
+        {% endfor %}
+      </select>
+      <input type="text" name="provider" id="providerName" placeholder="Nom du prestataire" required><br>
+      <textarea name="description" id="projectDescription" placeholder="Description du projet"></textarea><br>
+      <input name="budget" type="number" id="projectBudget" placeholder="Budget du projet" min="0" required><br>
+      <input name="duration" type="number" id="contractDuration" placeholder="Durée du contrat" min="0" required><br>
+      <input name="maxChanges" type="number" id="maxChanges" placeholder="Nombre max de modifications" min="0" required><br>
+      <button type="submit" class="button" onclick="generateContract()">Générer le Contrat</button>
+      <button type="button" class="button button-close" onclick="closeForm()">Fermer</button>
+    </form>
+    
+  
+  </div>
+
+
+{% if contracts_list %}
+<!--<div class="table-container">-->
+<table id="contractTable">
+    <tr>
+    <th>#</th>
+    <th>Nom du Contrat</th>
+    <th>Actions</th>
+    </tr>
+    <tbody>
+        {% for contract in contracts_list %}
+        <tr>
+            <td> {{forloop.counter}} </td>
+            <td> {{contract.name}} </td>
+            <td>
+                <button 
+                    style="background-color: #4CAF50; border:none; color: white; padding: 10px 20px; margin-right: 10px; text-align-center; display: inline-block; text-decoration: none; font-size: 12px; cursor: pointer; border-radius: 4px;" 
+                    id="viewBtn-{{contract.id}}" 
+                    onclick="showContract('{{contract.name}}', '{{contract.client.name}}', '{{contract.provider}}', '{{contract.description}}', '{{contract.budget}}', '{{contract.duration}}', '{{contract.max_changes}}')">
+                    <ion-icon name="eye"></ion-icon>
+                    Voir
+                </button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% else %}      
+<h4 style="text-align: center;">
+    Aucun Contrat enregistré pour le moment
+</h4>
+{% endif %}
+<!--</div>-->
+
+<div class="overlay" onclick="closePopup()"></div>
+<div class="contract-popup" id="contractPopup">
+<!-- Le contrat généré s'affichera ici -->
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends 'director/index.html' %}
+
+{% block content %}
+<button id="ajouterBtn" onclick="afficherForm()">
+    <ion-icon name="add-circle"></ion-icon>
+    Ajouter un client
+</button>
+                
+{% if clients_list %}
+    
+<table id="clientTable">
+  <tr>
+    <th>N°</th>
+    <th>Nom du Client</th>
+    {% comment %} <th>Téléphone</th>
+    <th>Email</th>
+    <th>Adresse</th> {% endcomment %}
+    <th>Actions</th>
+  </tr>
+  <tbody>
+    {% for client in clients_list %}
+    <tr>
+        <td>{{forloop.counter}}</td>
+        <td>{{client.name}}</td>
+        {% comment %} <td>{{client.phone_number}}</td>
+        <td>{{client.email}}</td>
+        <td>{{client.address}}</td> {% endcomment %}
+        <td>
+            <button 
+                style="background-color: #4CAF50; border:none; color: white; padding: 10px 20px; margin-right: 10px; text-align-center; display: inline-block; text-decoration: none; font-size: 12px; cursor: pointer; border-radius: 4px;" 
+                id="viewBtn-{{client.id}}" 
+                onclick="afficherPopup('{{client.name}}', '{{client.phone_number}}', '{{client.email}}', '{{client.address}}')">
+                <ion-icon name="eye"></ion-icon>
+                Voir
+            </button>
+            {% comment %} <button id="editBtn" onclick="afficherForm()">
+                <span class="icon">
+                    <ion-icon name="people-sharp"></ion-icon>
+                </span>
+            </button> {% endcomment %}
+            {% comment %} <button 
+                style="background-color: #f44336; border:none; color: white; padding: 10px 20px; margin-right: 10px; text-align-center; display: inline-block; text-decoration: none; font-size: 12px; cursor: pointer; border-radius: 4px;"  
+                id="deleteBtn-{{client.id}}" 
+                data-url="{% url 'clients:delete' id=client.id %}" 
+                onclick="afficherPopupSuppression({{client.id}}, '{{client.name}}')">
+                <ion-icon name="trash-bin"></ion-icon>
+                Supprimer
+            </button> {% endcomment %}
+        </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}      
+<h4 style="text-align: center;">
+    Aucun client enregistré pour le moment
+</h4>
+{% endif %}
+
+<div class="overlay" onclick="fermerPopup()"></div>
+
+<div class="form-popup" id="formPopup">
+  <h2>Enregistrer un client</h2>
+  <form id="clientForm" method="post" action="{% url 'clients:new' %}">
+    {% csrf_token %}
+    <input type="text" id="nom" name="nom" placeholder="Nom du client" required>
+    <input type="tel" id="telephone" name="telephone" placeholder="Numéro de téléphone" required>
+    <input type="email" id="email" name="email" placeholder="Email" required>
+    <input type="text" id="adresse" name="adresse" placeholder="Adresse" required>
+    <button type="submit">Enregistrer</button>
+    <button type="button" onclick="fermerPopup()">Fermer</button>
+  </form>
+</div>
+
+<div class="popup" id="popupInfo"></div>
+{% endblock %}

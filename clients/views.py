@@ -8,7 +8,7 @@ from django.urls import reverse
 from django.db.models import F
 from django.views import generic
 
-from clients.models import Client
+from clients.models import Client, Contract
 
 # Create your views here.
 # ...
@@ -16,7 +16,7 @@ from clients.models import Client
 logger = logging.getLogger(__name__)
 
 class IndexView(generic.ListView):
-    template_name = "director/index.html"
+    template_name = "director/client.html"
     context_object_name = "clients_list"
 
     def get_queryset(self):
@@ -70,3 +70,46 @@ def delete(request, id):
 
     return HttpResponseRedirect(reverse("clients:index"))
 
+
+class ContractView(generic.ListView):
+    template_name = "director/contract.html"
+    context_object_name = "contracts_list"
+
+    def get_queryset(self):
+        """Return all the contract"""
+        contracts = Contract.objects.all()
+        logger.info("obtention de la liste des contrats. Les contrats créés sont au nombre de : %s", contracts.count())
+        return contracts.reverse()
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Ajouter la liste des clients au contexte
+        context['clients_list'] = Client.objects.all()
+        return context
+    
+
+def newContract(request):
+    logger.info("création d'un nouveau contrat !")
+    if(request.method=="POST"):
+        
+        logger.info("Méthode Post reçu")
+        
+        # Logger les valeurs de request.POST
+        logger.info("Champs du formulaire : %s", request.POST)
+        
+        name = request.POST.get("name")
+        client_id = request.POST.get("client")
+        provider = request.POST.get("provider")
+        description = request.POST.get("description")
+        budget = request.POST.get("budget")
+        duration = request.POST.get("duration")
+        maxChanges = request.POST.get("maxChanges")
+        
+        logger.info("le contrat qu'on essaye d'enregistrer a pour nom : %s, id du client: %s, prestataire: %s, budget: %s, durée: %s, max de modif: %s, description %s, ", name, client_id, provider, budget, duration, maxChanges, description)
+        
+        # Récupérer l'objet client à partir de l'identifiant
+        client = get_object_or_404(Client, pk=client_id)
+        contract = Contract(name=name, client=client, description=description, provider=provider, budget=budget, duration=duration, max_changes=maxChanges)
+        contract.save()
+        
+    return HttpResponseRedirect(reverse("clients:contracts"))
