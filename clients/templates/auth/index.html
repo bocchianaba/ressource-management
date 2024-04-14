@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/connexion.css' %}">
+    {% load static %}
+    <script src="{% static 'js/connexion.js' %}"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Connexion</h1>
+        <form id="login-form" method="post" action="{% url 'loginConfirmation' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="username">Nom d'utilisateur: </label>
+                <input type="text" id="name" name="username" required>
+            </div>
+            {% comment %} <div class="form-group">
+                <label for="phone">Télephone : </label>
+                <input type="tel" id="phone" name="phone" required>
+            </div> {% endcomment %}
+            {% comment %} <div class="form-group">
+                <label for="position">Poste : </label>
+                <input type="text" id="position" name="position" required>
+            </div> {% endcomment %}
+            <div class="form-group">
+                <label for="password">Mot de passe : </label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit">Se connecter</button>
+        </form>
+    </div>
+</body>
+</html>

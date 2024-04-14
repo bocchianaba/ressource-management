@@ -10,27 +10,56 @@ from django.views import generic
 
 from clients.models import Client, Contract, Project
 
+from django.contrib.auth import authenticate, login
+from django.shortcuts import render, redirect
+from django.contrib import messages
+
+from django.contrib.auth.decorators import login_required
+
+
+
 # Create your views here.
 # ...
 
 logger = logging.getLogger(__name__)
 
-class IndexView(generic.ListView):
-    template_name = "director/client.html"
-    context_object_name = "clients_list"
+# @login_required
+# class IndexView(generic.ListView):
+#     template_name = "director/client.html"
+#     context_object_name = "clients_list"
 
-    def get_queryset(self):
-        """Return all the clients"""
-        clients = Client.objects.all()
-        logger.info("obtention de la liste des clients. Les clients créés sont au nombre de : %s", clients.count())
-        return clients.reverse()
+#     def get_queryset(self):
+#         """Return all the clients"""
+#         clients = Client.objects.all()
+#         logger.info("obtention de la liste des clients. Les clients créés sont au nombre de : %s", clients.count())
+#         return clients.reverse()
     
+@login_required
+def index_view(request):
+    """Vue pour afficher la liste des clients."""
+    clients = Client.objects.all()
+    logger.info("Obtention de la liste des clients. Les clients créés sont au nombre de : %s", clients.count())
+    context = {'clients_list': clients}
+    return render(request, 'director/client.html', context)
 
+@login_required
+def LoginView(request):
+    template_name = "auth/index.html"
+    return render(request, template_name, None)
+    # context_object_name = "clients_list"
 
-class DetailView(generic.DetailView):
+    # def get_queryset(self):
+    #     """Return all the clients"""
+    #     clients = Client.objects.all()
+    #     logger.info("obtention de la liste des clients. Les clients créés sont au nombre de : %s", clients.count())
+    #     return clients.reverse()
+
+@login_required
+def DetailView():
     model = Client
     template_name = "director/detail.html"
 
+@login_required
 def new(request):
     logger.info("création d'un nouveau client !")
     if(request.method=="POST"):
@@ -52,6 +81,7 @@ def new(request):
         
     return HttpResponseRedirect(reverse("clients:index"))
 
+@login_required
 def delete(request, id):
     try:
         element = Client.objects.get(id=id)
@@ -71,23 +101,21 @@ def delete(request, id):
     return HttpResponseRedirect(reverse("clients:index"))
 
 
-class ContractView(generic.ListView):
+@login_required
+def ContractView(request):
     template_name = "director/contract.html"
-    context_object_name = "contracts_list"
-
-    def get_queryset(self):
-        """Return all the contract"""
-        contracts = Contract.objects.all()
-        logger.info("obtention de la liste des contrats. Les contrats créés sont au nombre de : %s", contracts.count())
-        return contracts.reverse()
     
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # Ajouter la liste des clients au contexte
-        context['clients_list'] = Client.objects.all()
-        return context
+    """Return all the contract"""
+    contracts = Contract.objects.all()
+    logger.info("obtention de la liste des contrats. Les contrats créés sont au nombre de : %s", contracts.count())
     
+    # Ajouter la liste des clients au contexte
+    clients = Client.objects.all()
+    
+    context = {'clients_list': clients.reverse(), 'contracts_list': contracts.reverse()}
+    return render(request, template_name, context)
 
+@login_required
 def newContract(request):
     logger.info("création d'un nouveau contrat !")
     if(request.method=="POST"):
@@ -114,18 +142,31 @@ def newContract(request):
         
     return HttpResponseRedirect(reverse("clients:contracts"))
 
-
-class ProjectView(generic.ListView):
+@login_required
+def ProjectView(request):
     template_name = "director/project.html"
-    context_object_name = "projects_list"
+    # context_object_name = "projects_list"
+    
+    """Return all the project"""
+    projects = Project.objects.all()
+    context = { 'projects_list': projects.reverse}
+    logger.info("obtention de la liste des projets. Les contrats créés sont au nombre de : %s", projects.count())
+    
+    return render(request, template_name, context)
 
-    def get_queryset(self):
-        """Return all the project"""
-        projects = Project.objects.all()
-        logger.info("obtention de la liste des projets. Les contrats créés sont au nombre de : %s", projects.count())
-        return projects.reverse()
+
+@login_required
+def projectList(request):
+    template_name = "project-manager/index.html"
+    # context_object_name = "projects_list"
     
+    """Return all the project"""
+    projects = Project.objects.all()
+    context = { 'projects_list': projects.reverse}
+    logger.info("obtention de la liste des projets. Les contrats créés sont au nombre de : %s", projects.count())
     
+    return render(request, template_name, context)
+
 
 def newProject(request):
     logger.info("création d'un nouveau projet !")
@@ -147,3 +188,35 @@ def newProject(request):
         project.save()
         
     return HttpResponseRedirect(reverse("clients:projects"))
+
+
+def login_view(request):
+    if request.method == 'POST':
+        # Créer une instance du formulaire de connexion et le remplir avec les données de la requête
+        # form = LoginForm(request.POST)
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            if request.user.is_authenticated:
+                if request.user.groups.filter(name='Director').exists():
+                    return HttpResponseRedirect(reverse("clients:index"))
+                elif request.user.groups.filter(name='Project Manager').exists():
+                    return HttpResponseRedirect(reverse("clients:projectsList"))
+            # Redirection vers une page après la connexion réussie
+            return redirect('index')
+        else:
+            # Afficher un message d'erreur si l'authentification échoue
+            messages.error(request, 'Nom d\'utilisateur ou mot de passe incorrect.')
+    # else:
+    #     # Afficher le formulaire de connexion vide
+    #     form = LoginForm()
+    return HttpResponseRedirect(reverse("login"))
+
+def logout_view(request):
+    if request.method=='POST':
+        pass
+        # logout()
+
+    return HttpResponseRedirect(reverse("login"))

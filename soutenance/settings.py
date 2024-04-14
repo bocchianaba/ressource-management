@@ -154,4 +154,7 @@ LOGGING = {
         },
     },
 }
-
+# LOGIN_URL = 'http://localhost:8080/accounts/login'
+# LOGIN_REDIRECT_URL = '/ma-page-de-redirection-apres-login/'
+# settings.py
+LOGOUT_REDIRECT_URL = 'http://localhost:8080/accounts/login'

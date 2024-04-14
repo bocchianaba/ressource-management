@@ -72,10 +72,27 @@
             </div>
 
             <div class="main">
-                <div class="topbar">
+                <div class="topbar" style="width: 100%;">
                     <div class="toggle">
                         <ion-icon name="menu-outline"></ion-icon>
                     </div>
+                    {% if request.user.is_authenticated %}
+                    <div style="display: flex; font-size: 25px;align-items: center;">
+                        <ion-icon name="person-circle"></ion-icon>
+                        <h6 style="margin-right: 16px;">{{ request.user.username }}</h6>
+                        
+                        <form action="{% url 'logout' %}" method="post">
+                            {% csrf_token %}
+                            <button class="btn-primary" style="background-color: #FF69B4; color: white;;" type="submit">
+                                <ion-icon name="lock-closed"></ion-icon>
+                                Déconnexion
+                            </button>
+                        </form>
+                    </div>
+                    {% else %}
+                        <span>Non connecté</span>
+                        <a href="{% url 'login' %}" class="btn-primary">Se connecter</a>
+                    {% endif %}
                 </div>    
                 {% block content %}
                 {% endblock %}

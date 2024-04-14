@@ -137,17 +137,17 @@ body{
     left: 80px;
 }
 .topbar{
-    width: 10%;
-    height: 60px;
+    /* width: 10%; */
+    /* height: 60px; */
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 ;
-    right: 600px;
+    /* right: 600px; */
 }
 .toggle{
-    position: absolute;
-    top: 0;
+    /* position: absolute; */
+    /* top: 0; */
     width: 60px;
     height: 60px;
     /*background: #ccc;*/
@@ -329,6 +329,16 @@ table {
 
 .popup strong {
   color: #000;
+}
+
+.btn-primary{
+  background-color: #FF69B4;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
 }
 
 .overlay {
